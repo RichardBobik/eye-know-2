@@ -7,7 +7,7 @@ const Register = ({ loadUser, onRouteChange }) => {
   const [password, setPassword] = useState("");
 
   const onSubmit = () => {
-    fetch("http://localhost:3000/register", {
+    fetch("https://eye-know-api.onrender.com/register", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password })

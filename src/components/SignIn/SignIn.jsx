@@ -6,7 +6,7 @@ const SignIn = ({ loadUser, onRouteChange }) => {
   const [password, setPassword] = useState("");
 
   const onSubmit = () => {
-    fetch("http://localhost:3000/signIn", {
+    fetch("https://eye-know-api.onrender.com/signIn", {
       method: "post",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })

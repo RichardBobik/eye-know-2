@@ -45,7 +45,7 @@ const App = () => {
     setImageUrl(input);
     setIsSpinning(true);
 
-    fetch("http://localhost:3000/imageurl", {
+    fetch("https://eye-know-api.onrender.com/imageurl", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ imageUrl: input }),
@@ -63,7 +63,7 @@ const App = () => {
 
         setTimeout(() => setIsSpinning(false), 2000);
 
-        fetch("http://localhost:3000/image", {
+        fetch("https://eye-know-api.onrender.com/image", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: user.id }),

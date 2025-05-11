@@ -1,0 +1,42 @@
+.card {
+  margin-top: 6px;
+  flex: 0 1 30%;
+  min-width: 300px;
+  max-width: 350px;
+  height: 450px;
+  background: linear-gradient(90deg, #ff6a00 0%, #ee0979 100%);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+/* When spinning, apply a rotating + fade-in animation */
+.card.spinning {
+  animation: spinAndFadeIn 2s ease-in-out forwards;
+}
+
+/* Once spinning is done, keep it visible */
+.card.done {
+  opacity: 1;
+}
+
+/* Combined spin and fade-in */
+@keyframes spinAndFadeIn {
+  0% {
+    transform: rotateY(0deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(360deg);
+    opacity: 1;
+  }
+}
+
+.card-content {
+  padding: 35px;
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
+}

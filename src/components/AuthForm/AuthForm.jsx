@@ -5,9 +5,11 @@ const AuthForm = ({ title, fields, onSubmit, buttonText, extraElement }) => {
         <div className="measure">
           <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
             <legend className="f1 fw6 ph0 mh0">{title}</legend>
-            {fields.map(({ label, type, name, onChange }, index) => (
+            {fields.map(({ label, type, name, onChange, helper }, index) => (
               <div className={index === 0 ? "mt3" : "mv3"} key={name}>
-                <label className="db fw6 lh-copy f6" htmlFor={name}>{label}</label>
+                <label className="db fw6 lh-copy f6" htmlFor={name}>
+                  {label}
+                </label>
                 <input
                   className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100"
                   type={type}
@@ -15,20 +17,19 @@ const AuthForm = ({ title, fields, onSubmit, buttonText, extraElement }) => {
                   id={name}
                   onChange={onChange}
                 />
+                {helper && <small className="db mt1 gray f7">{helper}</small>}
               </div>
             ))}
           </fieldset>
           <div>
-            <input 
+            <input
               onClick={onSubmit}
-              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
-              type="submit" 
-              value={buttonText} 
+              className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib"
+              type="submit"
+              value={buttonText}
             />
           </div>
-          {extraElement && (
-            <div className="lh-copy mt3">{extraElement}</div>
-          )}
+          {extraElement && <div className="lh-copy mt3">{extraElement}</div>}
         </div>
       </main>
     </article>

@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import ParticlesBg from 'particles-bg'
-import Navigation from '../components/Navigation/Navigation';
-import SignIn from '../components/SignIn/SignIn';
-import Register from '../components/Register/Register';
-import Logo from '../components/Logo/Logo';
-import Rank from '../components/Rank/Rank'
-import ImageLinkForm from '../components/ImageLinkForm/ImageLinkForm';
-import ImagePreview from '../components/ImagePreview/ImagePreview';
-import Card from '../components/Card/Card';
-import './App.css';
+import React, { useState } from "react";
+import ParticlesBg from "particles-bg";
+import Navigation from "../components/Navigation/Navigation";
+import SignIn from "../components/SignIn/SignIn";
+import Register from "../components/Register/Register";
+import Logo from "../components/Logo/Logo";
+import Rank from "../components/Rank/Rank";
+import ImageLinkForm from "../components/ImageLinkForm/ImageLinkForm";
+import ImagePreview from "../components/ImagePreview/ImagePreview";
+import Card from "../components/Card/Card";
+import "./App.css";
 
 const initialUserState = {
   id: "",
@@ -41,11 +41,14 @@ const App = () => {
     setInput(event.target.value);
   };
 
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const onPictureSubmit = () => {
+    setHasSubmitted(true);
     setImageUrl(input);
     setIsSpinning(true);
 
-    fetch("https://eye-know-api.onrender.com/imageurl", {
+    fetch(`${import.meta.env.VITE_API_URL}/imageurl`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ imageUrl: input }),
@@ -57,13 +60,16 @@ const App = () => {
         const concepts = data.outputs?.[0]?.data?.concepts || [];
         const formattedLines = concepts
           .slice(0, 10)
-          .map((concept) => `${concept.name} (${(concept.value * 100).toFixed(1)}%)`);
+          .map(
+            (concept) =>
+              `${concept.name} (${(concept.value * 100).toFixed(1)}%)`
+          );
 
         setCardData({ lines: formattedLines });
 
         setTimeout(() => setIsSpinning(false), 2000);
 
-        fetch("https://eye-know-api.onrender.com/image", {
+        fetch(`${import.meta.env.VITE_API_URL}/image`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ id: user.id }),
@@ -98,11 +104,14 @@ const App = () => {
         <div>
           <Logo />
           <Rank name={user.name} entries={user.entries} />
-          <ImageLinkForm onInputChange={onInputChange} onButtonSubmit={onPictureSubmit} />
+          <ImageLinkForm
+            onInputChange={onInputChange}
+            onButtonSubmit={onPictureSubmit}
+          />
           <div className="card-image-container">
             {cardData && <Card data={cardData} isSpinning={isSpinning} />}
             <div className="image-preview-wrapper">
-              <ImagePreview imageUrl={imageUrl} />
+              <ImagePreview imageUrl={imageUrl} hasSubmitted={hasSubmitted} />
             </div>
           </div>
         </div>

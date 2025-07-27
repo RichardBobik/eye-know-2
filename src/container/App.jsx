@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ParticlesBg from "particles-bg";
 import Navigation from "../components/Navigation/Navigation";
 import SignIn from "../components/SignIn/SignIn";
@@ -8,6 +8,8 @@ import Rank from "../components/Rank/Rank";
 import ImageLinkForm from "../components/ImageLinkForm/ImageLinkForm";
 import ImagePreview from "../components/ImagePreview/ImagePreview";
 import Card from "../components/Card/Card";
+import Modal from "../components/Modal/Modal";
+import Profile from "../components/Profile/Profile";
 import "./App.css";
 
 const initialUserState = {
@@ -16,6 +18,8 @@ const initialUserState = {
   email: "",
   entries: 0,
   joined: "",
+  age: "",
+  pet: "",
 };
 
 const App = () => {
@@ -26,6 +30,43 @@ const App = () => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [cardData, setCardData] = useState(null);
   const [user, setUser] = useState(initialUserState);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  useEffect(() => {
+    const token = window.sessionStorage.getItem("token");
+    console.log("Stored token:", token);
+    if (token) {
+      fetch(`${import.meta.env.VITE_API_URL}/signIn`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Token-based sign-in response:", data);
+          if (data.id) {
+            fetch(`${import.meta.env.VITE_API_URL}/profile/${data.id}`, {
+              method: "get",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: token,
+              },
+            })
+              .then((resp) => resp.json())
+              .then((user) => {
+                if (user && user.email) {
+                  console.log(user);
+                  loadUser(user);
+                  onRouteChange("home");
+                }
+              });
+          }
+        })
+        .catch(console.log);
+    }
+  }, []); // empty dependency array = run only once on mount
 
   const loadUser = (data) => {
     setUser({
@@ -50,7 +91,10 @@ const App = () => {
 
     fetch(`${import.meta.env.VITE_API_URL}/imageurl`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: window.sessionStorage.getItem("token"),
+      },
       body: JSON.stringify({ imageUrl: input }),
     })
       .then((response) => response.json())
@@ -71,7 +115,10 @@ const App = () => {
 
         fetch(`${import.meta.env.VITE_API_URL}/image`, {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: window.sessionStorage.getItem("token"),
+          },
           body: JSON.stringify({ id: user.id }),
         })
           .then((res) => res.json())
@@ -90,16 +137,37 @@ const App = () => {
       setCardData(null);
       setUser(initialUserState);
       setIsSignedIn(false);
+      setRoute("signIn");
     } else if (route === "home") {
       setIsSignedIn(true);
+      setRoute("home");
+    } else {
+      setRoute(route);
     }
-    setRoute(route);
+  };
+
+  const toggleModal = () => {
+    setIsProfileOpen((prev) => !prev);
   };
 
   return (
     <div className="App">
       <ParticlesBg type="cobweb" bg={true} />
-      <Navigation isSignedIn={isSignedIn} onRouteChange={onRouteChange} />
+      <Navigation
+        isSignedIn={isSignedIn}
+        onRouteChange={onRouteChange}
+        toggleModal={toggleModal}
+      />
+      {isProfileOpen && (
+        <Modal>
+          <Profile
+            isProfileOpen={isProfileOpen}
+            toggleModal={toggleModal}
+            loadUser={loadUser}
+            user={user}
+          />
+        </Modal>
+      )}
       {route === "home" ? (
         <div>
           <Logo />

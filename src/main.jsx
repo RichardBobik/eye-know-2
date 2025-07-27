@@ -1,11 +1,13 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import './index.css';
-import App from './container/App';
-import 'tachyons';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./container/App";
 
-createRoot(document.getElementById('root')).render(
+import "bootstrap/dist/css/bootstrap.min.css";
+import "tachyons";
+import "./index.css";
+
+createRoot(document.getElementById("root")).render(
   <StrictMode>
     <App />
-  </StrictMode>,
-)
+  </StrictMode>
+);
